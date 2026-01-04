@@ -60,3 +60,6 @@ export PATH=/Users/minjie/.opencode/bin:$PATH
 eval "$(starship init zsh)"
 
 . "$HOME/.local/bin/env"
+
+# git setup for config files (config add .; config commit -m 'msg'; config push)
+alias config='/usr/bin/git --git-dir=$HOME/.config-git/ --work-tree=$HOME'
