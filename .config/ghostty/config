@@ -1,0 +1,6 @@
+keybind = cmd+backspace=text:\x15
+scrollback-limit=100000000
+auto-update-channel = tip
+keybind = shift+enter=text:\n
+theme = tokyonight
+font-size = 16
