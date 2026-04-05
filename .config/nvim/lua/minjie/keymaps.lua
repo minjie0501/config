@@ -1,4 +1,3 @@
-local twoslash = require("twoslash-queries")
 local prelude = require("minjie.prelude")
 local copy_line_diagnostics_to_clipboard = prelude.copy_line_diagnostics_to_clipboard
 local open_link = prelude.open_link
@@ -50,11 +49,6 @@ vim.keymap.set("n", "<leader>'", "<C-^>", { desc = "Switch to last buffer" })
 vim.keymap.set("n", "<leader>w", "<cmd>w<cr>", { silent = false, desc = "Save current buffer" })
 vim.keymap.set("n", "<leader>q", "<cmd>q<cr>", { silent = false, desc = "Quit current buffer" })
 
--- Map Oil to <leader>e
-vim.keymap.set("n", "<leader>e", function()
-	require("oil").toggle_float()
-end, { desc = "Toggle Oil file explorer" })
-
 -- Map Undotree
 vim.keymap.set("n", "<leader>ut", ":UndotreeToggle<CR>", { desc = "Toggle UndoTree" })
 
@@ -70,7 +64,7 @@ vim.keymap.set("n", "N", "Nzz", { desc = "Search previous and center" })
 vim.keymap.set("n", "n", "nzz", { desc = "Search next and center" })
 vim.keymap.set("n", "G", "Gzz", { desc = "Go to end of file and center" })
 vim.keymap.set("n", "gg", "ggzz", { desc = "Go to beginning of file and center" })
-vim.keymap.set("n", "gd", "gdzz", { desc = "Go to definition and center" })
+-- vim.keymap.set("n", "gd", "gdzz", { desc = "Go to definition and center" })
 vim.keymap.set("n", "<C-i>", "<C-i>zz", { desc = "Jump forward in jump list and center" })
 vim.keymap.set("n", "<C-o>", "<C-o>zz", { desc = "Jump backward in jump list and center" })
 vim.keymap.set("n", "%", "%zz", { desc = "Jump to matching bracket and center" })
@@ -105,6 +99,7 @@ vim.keymap.set("n", "U", "<C-r>", { desc = "Redo last change" })
 vim.keymap.set("n", "<leader>no", "<cmd>noh<cr>", { desc = "Toggle search highlighting" })
 
 vim.keymap.set("n", "<leader>ts", function()
+	local twoslash = require("twoslash-queries")
 	if twoslash.config.is_enabled then
 		vim.cmd("TwoslashQueriesDisable")
 		Snacks.notify.info("Two Slash queries disabled")
@@ -173,8 +168,7 @@ vim.keymap.set("n", "<leader>cp", ":cprevious<cr>zz", { desc = "Go to previous q
 vim.keymap.set("n", "<leader>co", ":copen<cr>zz", { desc = "Open quickfix list and center" })
 vim.keymap.set("n", "<leader>cc", ":cclose<cr>zz", { desc = "Close quickfix list" })
 
--- Maximizer toggle and window resize
-vim.keymap.set("n", "<leader>m", ":MaximizerToggle<cr>", { desc = "Toggle window maximization" })
+-- Equalize window sizes
 vim.keymap.set("n", "<leader>=", "<C-w>=", { desc = "Equalize split window sizes" })
 
 -- Format current buffer
@@ -195,60 +189,23 @@ vim.keymap.set("n", "gx", open_link, { silent = true, desc = "Open link under cu
 -- Run TypeScript compiler
 vim.keymap.set("n", "<leader>tc", ":TSC<cr>", { desc = "Run TypeScript compile" })
 
--- Telescope keybinds --
-vim.keymap.set("n", "<leader>?", require("telescope.builtin").oldfiles, { desc = "Find recently opened files" })
-
-vim.keymap.set("n", "<leader>sb", require("telescope.builtin").buffers, { desc = "Search open buffers" })
-
-vim.keymap.set("n", "<leader>sf", function()
-	require("telescope.builtin").find_files({ hidden = true })
-end, { desc = "Find files (including hidden)" })
-
-vim.keymap.set("n", "<leader>sh", require("telescope.builtin").help_tags, { desc = "Search help tags" })
-
-vim.keymap.set("n", "<leader>sg", require("telescope.builtin").live_grep, { desc = "Live grep search" })
-
-vim.keymap.set("n", "<leader>sc", require("telescope.builtin").git_bcommits, { desc = "[S]earch buffer [C]ommits" })
-
-vim.keymap.set("n", "<leader>/", function()
-	require("telescope.builtin").current_buffer_fuzzy_find(
-		require("telescope.themes").get_dropdown({ previewer = false })
-	)
-end, { desc = "Fuzzily search in current buffer" })
-
-vim.keymap.set("n", "<leader>ss", function()
-	require("telescope.builtin").spell_suggest(require("telescope.themes").get_dropdown({ previewer = false }))
-end, { desc = "Spell suggestions search" })
-
 -- LSP Keybinds (per-buffer)
 M.map_lsp_keybinds = function(buffer_number)
 	vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "LSP: Rename symbol", buffer = buffer_number })
 	vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "LSP: Code action", buffer = buffer_number })
 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "LSP: Go to definition", buffer = buffer_number })
-	vim.keymap.set(
-		"n",
-		"gr",
-		require("telescope.builtin").lsp_references,
-		{ desc = "LSP: Go to references", buffer = buffer_number }
-	)
-	vim.keymap.set(
-		"n",
-		"gi",
-		require("telescope.builtin").lsp_implementations,
-		{ desc = "LSP: Go to implementations", buffer = buffer_number }
-	)
-	vim.keymap.set(
-		"n",
-		"<leader>bs",
-		require("telescope.builtin").lsp_document_symbols,
-		{ desc = "LSP: Document symbols", buffer = buffer_number }
-	)
-	vim.keymap.set(
-		"n",
-		"<leader>ps",
-		require("telescope.builtin").lsp_workspace_symbols,
-		{ desc = "LSP: Workspace symbols", buffer = buffer_number }
-	)
+	vim.keymap.set("n", "gr", function()
+		require("telescope.builtin").lsp_references()
+	end, { desc = "LSP: Go to references", buffer = buffer_number })
+	vim.keymap.set("n", "gi", function()
+		require("telescope.builtin").lsp_implementations()
+	end, { desc = "LSP: Go to implementations", buffer = buffer_number })
+	vim.keymap.set("n", "<leader>bs", function()
+		require("telescope.builtin").lsp_document_symbols()
+	end, { desc = "LSP: Document symbols", buffer = buffer_number })
+	vim.keymap.set("n", "<leader>ps", function()
+		require("telescope.builtin").lsp_workspace_symbols()
+	end, { desc = "LSP: Workspace symbols", buffer = buffer_number })
 
 	local signature_help = function()
 		return vim.lsp.buf.signature_help({ border = "rounded" })

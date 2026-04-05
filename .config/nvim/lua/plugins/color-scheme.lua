@@ -10,6 +10,7 @@ return {
 				-- 	-- solid = false,
 				-- },
 				integrations = {
+					harpoon = true,
 					fidget = true,
 					gitsigns = true,
 					mason = true,

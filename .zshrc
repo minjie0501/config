@@ -21,7 +21,9 @@ fi
 
 export PATH=$PATH:/Users/minjie/bin
 
-eval "$(pyenv init -)" # turn on pyenv for the shell
+# Lazy-load pyenv (keep shims on PATH, defer full init until first use)
+export PATH="$HOME/.pyenv/shims:$PATH"
+pyenv() { unfunction pyenv; eval "$(command pyenv init -)"; pyenv "$@" }
 eval "$(direnv hook zsh)"
 
 
@@ -31,11 +33,6 @@ export PATH=/Users/minjie/.sst/bin:$PATH
 
 # fnm
 eval "$(fnm env --use-on-cd)"
-FNM_PATH="/Users/minjie/Library/Application Support/fnm"
-if [ -d "$FNM_PATH" ]; then
-  export PATH="/Users/minjie/Library/Application Support/fnm:$PATH"
-  eval "`fnm env`"
-fi
 
 
 # bun
@@ -48,8 +45,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 
-# Open Cursor
-alias c="open $1 -a \"Cursor\""
+# Open VS Code
+alias c="open $1 -a \"Visual Studio Code\""
+# alias c="open $1 -a \"Cursor\""
 
 
 # opencode
@@ -63,3 +61,19 @@ eval "$(starship init zsh)"
 
 # git setup for config files (config add .; config commit -m 'msg'; config push)
 alias config='/usr/bin/git --git-dir=$HOME/.config-git/ --work-tree=$HOME'
+
+# personal aliases
+m() {
+  if [[ "$1" = "aws" && "$2" = "login" ]]; then
+    aws sso login --profile appstrakt
+  else
+    echo "Usage:"
+    echo "  m aws login    # runs: aws sso login --profile appstrakt"
+  fi
+}
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+
+# zoxide
+eval "$(zoxide init zsh)"
+source ~/.safe-chain/scripts/init-posix.sh # Safe-chain Zsh initialization script

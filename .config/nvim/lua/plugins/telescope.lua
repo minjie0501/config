@@ -2,12 +2,23 @@ return {
 	{
 		"nvim-telescope/telescope.nvim",
 		branch = "master",
+		cmd = { "Telescope" },
+		keys = {
+			{ "<leader>?", function() require("telescope.builtin").oldfiles() end, desc = "Find recently opened files" },
+			{ "<leader>sb", function() require("telescope.builtin").buffers() end, desc = "Search open buffers" },
+			{ "<leader>sf", function() require("telescope.builtin").find_files({ hidden = true }) end, desc = "Find files (including hidden)" },
+			{ "<leader>sh", function() require("telescope.builtin").help_tags() end, desc = "Search help tags" },
+			{ "<leader>sg", function() require("telescope.builtin").live_grep() end, desc = "Live grep search" },
+			{ "<leader>sc", function() require("telescope.builtin").git_bcommits() end, desc = "Search buffer commits" },
+			{ "<leader>/", function() require("telescope.builtin").current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({ previewer = false })) end, desc = "Fuzzily search in current buffer" },
+			{ "<leader>ss", function() require("telescope.builtin").spell_suggest(require("telescope.themes").get_dropdown({ previewer = false })) end, desc = "Spell suggestions search" },
+		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			{
 				"nvim-telescope/telescope-fzf-native.nvim",
-				build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
-				cond = vim.fn.executable("cmake") == 1,
+				build = "make",
+				cond = vim.fn.executable("make") == 1,
 			},
 		},
 		config = function()
@@ -38,7 +49,6 @@ return {
 				},
 			})
 
-			-- Enable telescope fzf native, if installed
 			pcall(require("telescope").load_extension, "fzf")
 		end,
 	},

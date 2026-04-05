@@ -5,6 +5,7 @@ return {
 		dependencies = {
 			"rafamadriz/friendly-snippets",
 			"L3MON4D3/LuaSnip",
+			"giuxtaposition/blink-cmp-copilot",
 		},
 		version = "v1.*",
 		opts = {
@@ -43,10 +44,16 @@ return {
 				nerd_font_variant = "mono",
 			},
 			sources = {
-				default = { "lsp", "path", "snippets", "buffer" },
+				default = { "lsp", "copilot", "path", "snippets", "buffer" },
 				providers = {
 					lsp = {
 						score_offset = 1000, -- Extreme priority to override fuzzy matching
+					},
+					copilot = {
+						name = "copilot",
+						module = "blink-cmp-copilot",
+						score_offset = 100,
+						async = true,
 					},
 					path = {
 						score_offset = 3, -- File paths moderate priority
@@ -95,6 +102,7 @@ return {
 								text = function(ctx)
 									local source_names = {
 										lsp = "[LSP]",
+										copilot = "[Copilot]",
 										buffer = "[Buffer]",
 										path = "[Path]",
 										snippets = "[Snippet]",

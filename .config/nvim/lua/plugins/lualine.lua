@@ -3,16 +3,12 @@ return {
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
 		config = function()
-
 			local function truncate_branch_name(branch)
 				if not branch or branch == "" then
 					return ""
 				end
 
-				-- Match the branch name to the specified format
 				local user, team, ticket_number = string.match(branch, "^(%w+)/(%w+)%-(%d+)")
-
-				-- If the branch name matches the format, display {user}/{team}-{ticket_number}, otherwise display the full branch name
 				if ticket_number then
 					return user .. "/" .. team .. "-" .. ticket_number
 				else
@@ -20,49 +16,53 @@ return {
 				end
 			end
 
-			local vcs_cache = { result = nil, cwd = nil }
+			local vcs_cache = { result = "", cwd = nil, pending = false }
 
-			local function get_vcs_info()
+			local function refresh_vcs_info()
 				local cwd = vim.fn.getcwd()
-				if vcs_cache.cwd == cwd and vcs_cache.result then
-					return vcs_cache.result
+				if vcs_cache.pending or vcs_cache.cwd == cwd then
+					return
+				end
+				vcs_cache.pending = true
+
+				local function update_cache(result)
+					vcs_cache = { result = result, cwd = cwd, pending = false }
+					vim.schedule(function()
+						vim.cmd("redrawstatus")
+					end)
 				end
 
-				-- Check jj first (priority over git for colocated repos)
-				vim.fn.system("jj root 2>/dev/null")
-				if vim.v.shell_error == 0 then
-					local bookmark = vim.fn.system("jj log -r @ --no-graph -T 'bookmarks'"):gsub("%s+$", "")
-					if bookmark == "" then
-						local change_id =
-							vim.fn.system("jj log -r @ --no-graph -T 'change_id.shortest(8)'"):gsub("%s+$", "")
-						vcs_cache = { result = change_id, cwd = cwd }
-					else
-						local first = bookmark:match("^(%S+)") or bookmark
-						vcs_cache = { result = truncate_branch_name(first), cwd = cwd }
+				vim.system(
+					{ "git", "branch", "--show-current" },
+					{ text = true, cwd = cwd },
+					function(git_branch)
+						local branch = vim.trim(git_branch.stdout or "")
+						if git_branch.code == 0 and branch ~= "" then
+							update_cache(truncate_branch_name(branch))
+						else
+							update_cache("")
+						end
 					end
-					return vcs_cache.result
-				end
-
-				-- Fallback: git branch
-				local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("%s+$", "")
-				if vim.v.shell_error == 0 and branch ~= "" then
-					vcs_cache = { result = truncate_branch_name(branch), cwd = cwd }
-					return vcs_cache.result
-				end
-
-				vcs_cache = { result = "", cwd = cwd }
-				return ""
+				)
 			end
 
-			vim.api.nvim_create_autocmd({ "DirChanged", "BufEnter", "FocusGained" }, {
+			local function get_vcs_info()
+				return vcs_cache.result
+			end
+
+			vim.api.nvim_create_autocmd({ "DirChanged", "FocusGained" }, {
 				callback = function()
-					vcs_cache = { result = nil, cwd = nil }
+					vcs_cache = { result = vcs_cache.result, cwd = nil, pending = false }
+					refresh_vcs_info()
 				end,
 			})
 
+			-- Seed initial VCS info
+			refresh_vcs_info()
+
 			require("lualine").setup({
 				options = {
-					theme = "catppuccin",
+					theme = "catppuccin-macchiato",
 					globalstatus = true,
 					component_separators = { left = "", right = "" },
 					section_separators = { left = "█", right = "█" },

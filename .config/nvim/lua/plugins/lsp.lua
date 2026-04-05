@@ -58,6 +58,7 @@ return {
 						syntaxDocumentation = { enable = true },
 					},
 				},
+				oxlint = {},
 				sqls = {},
 				tailwindcss = {
 					filetypes = { "typescriptreact", "javascriptreact", "html", "svelte", "astro" },
@@ -136,6 +137,10 @@ return {
 					vim.lsp.enable(name)
 				end
 			end
+
+			-- Enable oxc LSP servers (resolved from node_modules automatically)
+			vim.lsp.enable("oxlint")
+			vim.lsp.enable("oxfmt")
 
 			-- Setup Mason for managing external LSP servers
 			require("mason").setup({ ui = { border = "rounded" } })

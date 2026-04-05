@@ -162,7 +162,7 @@ return {
 				desc = "Toggle [I]nlay [H]ints",
 			},
 			{
-				"<leader>hl",
+				"<leader>th",
 				function()
 					local hc = require("nvim-highlight-colors")
 					Snacks.toggle({

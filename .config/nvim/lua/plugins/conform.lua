@@ -33,6 +33,9 @@ return {
 				if vim.g.disable_autoformat or vim.b[buffer_number].disable_autoformat then
 					return
 				end
+				if vim.bo[buffer_number].filetype == "harpoon" then
+					return
+				end
 				return {
 					async = true,
 					timeout_ms = 500,
@@ -41,9 +44,13 @@ return {
 			end,
 			formatters_by_ft = {
 				astro = { "biome", "prettierd", stop_after_first = true },
-				javascript = { "biome", "prettierd", stop_after_first = true },
-				typescript = { "biome", "prettierd", stop_after_first = true },
-				typescriptreact = { "biome", "prettierd", stop_after_first = true },
+				html = { "oxfmt", "prettierd", stop_after_first = true },
+				javascript = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+				javascriptreact = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+				json = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+				toml = { "oxfmt" },
+				typescript = { "oxfmt", "biome", "prettierd", stop_after_first = true },
+				typescriptreact = { "oxfmt", "biome", "prettierd", stop_after_first = true },
 				svelte = { "prettierd" },
 				lua = { "stylua" },
 			},

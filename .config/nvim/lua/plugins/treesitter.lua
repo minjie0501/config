@@ -1,13 +1,10 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-		build = function()
-			require("nvim-treesitter.install").update({ with_sync = true })
-		end,
-		event = { "BufEnter" },
+		build = ":TSUpdate",
+		event = { "BufReadPost", "BufNewFile" },
 		config = function()
-			---@diagnostic disable: missing-fields
-			require("nvim-treesitter.configs").setup({
+			require("nvim-treesitter").setup({
 				ensure_installed = {
 					"bash",
 					"css",
@@ -29,65 +26,21 @@ return {
 					"vimdoc",
 					"yaml",
 				},
-				sync_install = false,
-				highlight = {
-					enable = true,
-				},
-				indent = {
-					enable = true,
-					disable = { "ocaml", "ocaml_interface" },
-				},
-				autopairs = {
-					enable = true,
-				},
-				autotag = {
-					enable = true,
-				},
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "<c-space>",
-						node_incremental = "<c-space>",
-						scope_incremental = "<c-s>",
-						node_decremental = "<c-backspace>",
-					},
-				},
-				textobjects = {
-					select = {
-						enable = true,
-						lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-						keymaps = {
-							-- You can use the capture groups defined in textobjects.scm
-							["aa"] = "@parameter.outer",
-							["ia"] = "@parameter.inner",
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							["ic"] = "@class.inner",
-						},
-					},
-					move = {
-						enable = true,
-						set_jumps = true, -- whether to set jumps in the jumplist
-						goto_next_start = {
-							["]m"] = "@function.outer",
-							["]]"] = "@class.outer",
-						},
-						goto_next_end = {
-							["]M"] = "@function.outer",
-							["]["] = "@class.outer",
-						},
-						goto_previous_start = {
-							["[m"] = "@function.outer",
-							["[["] = "@class.outer",
-						},
-						goto_previous_end = {
-							["[M"] = "@function.outer",
-							["[]"] = "@class.outer",
-						},
-					},
-				},
 			})
+
+			-- Enable treesitter highlighting for all buffers
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(args)
+					pcall(vim.treesitter.start, args.buf)
+				end,
+			})
+
+			-- Also enable for already-loaded buffers (the one that triggered lazy load)
+			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+				if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].filetype ~= "" then
+					pcall(vim.treesitter.start, buf)
+				end
+			end
 		end,
 	},
 

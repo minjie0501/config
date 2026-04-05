@@ -24,8 +24,7 @@ lazy.setup({
 		{ import = "plugins" },
 	},
 	change_detection = {
-		enabled = true,
-		notify = true,
+		enabled = false,
 	},
-	checker = { enabled = true },
+	checker = { enabled = true, frequency = 86400 },
 })

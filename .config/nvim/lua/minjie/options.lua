@@ -1,3 +1,6 @@
+-- Use /bin/sh for system() calls to avoid slow zsh startup
+vim.o.shell = "/bin/sh"
+
 -- Enable relative line numbers
 vim.opt.nu = true
 vim.opt.rnu = true
@@ -38,9 +41,6 @@ vim.opt.mouse = "a"
 -- Enable ignorecase + smartcase for better searching
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-
--- Decrease updatetime to 250ms
-vim.opt.updatetime = 250
 
 -- Set completeopt to have a better completion experience
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
