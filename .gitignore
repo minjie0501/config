@@ -1,3 +1,7 @@
 .zshrc.local
 ./config/nvim/.undodir
 .config/nvim/.undodir/
+
+.DS_Store
+
+**/.claude/settings.local.json

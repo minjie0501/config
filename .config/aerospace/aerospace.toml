@@ -1,13 +1,11 @@
 # Place a copy of this config to ~/.aerospace.toml
 # After that, you can edit ~/.aerospace.toml to your liking
 
-# You can use it to add commands that run after login to macOS user session.
-# 'start-at-login' needs to be 'true' for 'after-login-command' to work
-# Available commands: https://nikitabobko.github.io/AeroSpace/commands
-after-login-command = []
+# Config version for compatibility and deprecations
+# See: https://nikitabobko.github.io/AeroSpace/guide#config-version
+config-version = 2
 
 # You can use it to add commands that run after AeroSpace startup.
-# 'after-startup-command' is run after 'after-login-command'
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = []
 
@@ -42,6 +40,34 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 # Useful if you don't use this macOS feature, but accidentally hit cmd-h or cmd-alt-h key
 # Also see: https://nikitabobko.github.io/AeroSpace/goodness#disable-hide-app
 automatically-unhide-macos-hidden-apps = false
+
+# Keep the same workspaces available under config-version 2.
+persistent-workspaces = [
+  '1', '2', '3', '4', '5', '6', '7', '8', '9',
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'I',
+  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+  'U', 'V', 'W', 'X', 'Y', 'Z',
+]
+
+# Move app windows to their expected workspaces when AeroSpace detects them.
+on-window-detected = [
+  { if = 'test %{app-bundle-id} = com.mitchellh.ghostty', run = ['move-node-to-workspace 1'] },
+  { if = 'test %{app-bundle-id} = com.tinyspeck.slackmacgap', run = ['move-node-to-workspace S'] },
+  { if = 'test %{app-bundle-id} = net.imput.helium', run = ['move-node-to-workspace 3'] },
+  { if = 'test %{app-bundle-id} = com.brave.Browser', run = ['move-node-to-workspace 3'] },
+  { if = 'test %{app-bundle-id} = notion.id', run = ['move-node-to-workspace N'] },
+  { if = 'test %{app-bundle-id} = dev.kdrag0n.MacVirt', run = ['move-node-to-workspace D'] },
+  { if = 'test %{app-bundle-id} = com.microsoft.VSCode', run = ['move-node-to-workspace 2'] },
+  { if = 'test %{app-bundle-id} = org.jkiss.dbeaver.core.product', run = ['move-node-to-workspace 5'] },
+  { if = 'test %{app-bundle-id} = com.sequel-ace.sequel-ace', run = ['move-node-to-workspace 5'] },
+  { if = 'test %{app-bundle-id} = com.apidog.eu.app', run = ['move-node-to-workspace P'] },
+  { if = 'test %{app-bundle-id} = io.productive', run = ['move-node-to-workspace P'] },
+  { if = 'test %{app-bundle-id} = us.zoom.xos', run = ['move-node-to-workspace Z'] },
+  { if = 'test %{app-bundle-id} = com.electron.wispr-flow', run = ['move-node-to-workspace W'] },
+  { if = 'test %{app-bundle-id} = com.apple.mail', run = ['move-node-to-workspace M'] },
+  { if = 'test %{app-bundle-id} = com.anthropic.claudefordesktop', run = ['move-node-to-workspace C'] },
+  { if = 'test %{app-bundle-id} = com.openai.codex', run = ['move-node-to-workspace C'] },
+]
 
 # Possible values: (qwerty|dvorak)
 # See https://nikitabobko.github.io/AeroSpace/guide#key-mapping
@@ -202,4 +228,3 @@ alt-shift-h = ['join-with left', 'mode main']
 alt-shift-j = ['join-with down', 'mode main']
 alt-shift-k = ['join-with up', 'mode main']
 alt-shift-l = ['join-with right', 'mode main']
-
