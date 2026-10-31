@@ -1,0 +1,7 @@
+{
+  "about": "Fingerprints (from installed.json) of Herdr's originals that space-groups and the minjie layout were copied from, on 2026-10-31 (herdr-app 0.1.10). When installed.json shows other values, Herdr changed an original: the copy may miss that change.",
+  "watch": {
+    "spaces": { "main.js": "9b8249038d8a6a9c" },
+    "layout:main": { "json": "d25b961ea961fba1" }
+  }
+}
