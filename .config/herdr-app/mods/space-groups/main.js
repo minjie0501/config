@@ -113,7 +113,7 @@ const checkUpstream = async () => {
   localStorage.setItem("upstream.told", key);
   notify({
     // The toast shows one line of body: keep it short.
-    title: "Space groups is out of date",
+    title: "A copied Herdr mod is out of date",
     body: `Herdr updated: ${changed.join(", ")}`,
     level: "info",
   });
