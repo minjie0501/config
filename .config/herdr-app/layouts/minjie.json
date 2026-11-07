@@ -147,6 +147,13 @@
                       "content": {
                         "mod": "prs"
                       }
+                    },
+                    {
+                      "id": "issues",
+                      "type": "block",
+                      "content": {
+                        "mod": "issues"
+                      }
                     }
                   ],
                   "active": "files"
